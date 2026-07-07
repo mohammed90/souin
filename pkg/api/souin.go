@@ -169,17 +169,16 @@ var storageToInfiniteTTLMap = map[string]time.Duration{
 }
 
 func EvictMapping(current types.Storer) {
-	values := current.MapKeys(core.MappingKeyPrefix)
 	now := time.Now()
 	infiniteStoreDuration := storageToInfiniteTTLMap[current.Name()]
 
-	for k, v := range values {
+	processMapping := func(k string, v []byte) bool {
 		mapping := &core.StorageMapper{}
 
-		e := proto.Unmarshal([]byte(v), mapping)
+		e := proto.Unmarshal(v, mapping)
 		if e != nil {
 			current.Delete(core.MappingKeyPrefix + k)
-			continue
+			return true
 		}
 
 		updated := false
@@ -205,6 +204,20 @@ func EvictMapping(current types.Storer) {
 		if len(mapping.GetMapping()) == 0 {
 			current.Delete(core.MappingKeyPrefix + k)
 		}
+
+		return true
+	}
+
+	// Stream the mapping index in bounded batches when the storer supports
+	// it, so the whole index is never materialized in memory at once.
+	if walker, ok := current.(core.MappingWalker); ok {
+		_ = walker.WalkMappings(core.MappingKeyPrefix, processMapping)
+
+		return
+	}
+
+	for k, v := range current.MapKeys(core.MappingKeyPrefix) {
+		processMapping(k, []byte(v))
 	}
 }
 

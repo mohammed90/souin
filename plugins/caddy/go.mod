@@ -37,7 +37,6 @@ require (
 	github.com/cloudflare/circl v1.6.3 // indirect
 	github.com/coreos/go-oidc/v3 v3.17.0 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.7 // indirect
-	github.com/darkweak/go-esi v0.0.6 // indirect
 	github.com/dgraph-io/badger v1.6.2 // indirect
 	github.com/dgraph-io/badger/v2 v2.2007.4 // indirect
 	github.com/dgraph-io/ristretto v0.2.0 // indirect
@@ -177,3 +176,5 @@ require (
 )
 
 replace github.com/darkweak/souin v1.7.8 => ../..
+
+replace github.com/darkweak/storages/core => github.com/mohammed90/storages/core v0.0.0-20260707230756-6f41a049943a

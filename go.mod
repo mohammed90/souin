@@ -127,7 +127,6 @@ require (
 )
 
 require (
-	github.com/darkweak/go-esi v0.0.5
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/klauspost/compress v1.18.4 // indirect
 	github.com/miekg/dns v1.1.72 // indirect
@@ -136,3 +135,5 @@ require (
 	golang.org/x/tools v0.42.0 // indirect
 	google.golang.org/grpc v1.79.1 // indirect
 )
+
+replace github.com/darkweak/storages/core => github.com/mohammed90/storages/core v0.0.0-20260707230756-6f41a049943a
