@@ -136,4 +136,4 @@ require (
 	google.golang.org/grpc v1.79.1 // indirect
 )
 
-replace github.com/darkweak/storages/core => github.com/mohammed90/storages/core v0.0.0-20260707230756-6f41a049943a
+replace github.com/darkweak/storages/core => github.com/mohammed90/storages/core v0.0.0-20260820095004-53a85089a1bb
