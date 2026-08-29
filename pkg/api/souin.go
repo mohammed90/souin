@@ -168,11 +168,24 @@ var storageToInfiniteTTLMap = map[string]time.Duration{
 	types.DefaultStorageName: types.OneYearDuration,
 }
 
+// maxMappingValueSize bounds the mapping values the eviction is willing to
+// decode. Anything larger is dropped undecoded: unmarshalling a pathological
+// value would materialize it in memory, and its response keys expire through
+// their own TTLs anyway.
+const maxMappingValueSize = 1 << 20
+
 func EvictMapping(current types.Storer) {
 	now := time.Now()
 	infiniteStoreDuration := storageToInfiniteTTLMap[current.Name()]
 
 	processMapping := func(k string, v []byte) bool {
+		if len(v) > maxMappingValueSize {
+			fmt.Println("Deleting the oversized mapping", core.MappingKeyPrefix+k)
+			current.Delete(core.MappingKeyPrefix + k)
+
+			return true
+		}
+
 		mapping := &core.StorageMapper{}
 
 		e := proto.Unmarshal(v, mapping)
